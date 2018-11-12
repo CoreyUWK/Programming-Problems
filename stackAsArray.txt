@@ -1,0 +1,14 @@
+topOfStack = {3, 2, -1}
+stackData = { 1, 2,  4, 3, 0,  0}
+nextIndex = {-1, 0, -1, 1, 5, -1}
+nextAvaliable = 5
+
+push 1 -> 1
+int currentIndex = nextAvaliable
+nextAvaliable = nextIndex[currentIndex]
+stackData[nextAvaliable] = value
+nextIndex[currentIndex] = topOfStack[stack] // 1->-1, 2->0
+topOfStack[stack] = currentIndex
+
+push 2 -> 1
+push 4 -> 2
