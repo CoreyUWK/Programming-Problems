@@ -141,12 +141,145 @@ int main()
     t.root->right->right = createNode(6);
     
     cout << "Sum for 0 is " << t.verticalSum(0) << endl;
-    cout << "Sum for 0 is " << t.verticalSum(1) << endl;
-    cout << "Sum for 0 is " << t.verticalSum(-1) << endl;
-    cout << "Sum for 0 is " << t.verticalSum(2) << endl;
+    cout << "Sum for 1 is " << t.verticalSum(1) << endl;
+    cout << "Sum for -1 is " << t.verticalSum(-1) << endl;
+    cout << "Sum for 2 is " << t.verticalSum(2) << endl;
 
 	cout << "Max width: " << t.width() << endl;
     cout << "Max width: " << t.width2() << endl;
 
     return 0;
 }
+
+
+
+
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include <stack>
+#include <unordered_map>
+#include <utility> 
+#include <algorithm>
+#include <vector>
+#include <cmath>
+#include <queue>
+using namespace std;
+
+struct Node {
+    int value;
+    Node *left;
+    Node *right;
+    
+    Node(int value) : value(value), left(NULL), right(NULL) {}
+};
+
+Node* createNode(int value) {
+    Node *node = new Node(value);
+    return node;
+}
+
+class Tree {
+    void verticalSumInter(Node *node, int v, unordered_map<int, int> &map) {
+        if (NULL == node) return;
+        
+        map[v] += node->value;
+        verticalSumInter(node->left, v - 1, map);
+        verticalSumInter(node->right, v + 1, map);
+    }
+    
+    void maxWidthInter(Node *node, int level, unordered_map<int,int> &map) {
+        if (NULL == node) return;
+
+        map[level] += 1;
+        maxWidthInter(node->left, level + 1, map);
+        maxWidthInter(node->right, level + 1, map);
+    }
+    
+    static bool widthCompare(pair<int,int> lhs, pair<int,int> rhs) {
+        return rhs.second > lhs.second;
+    }
+    
+    public:
+    Node *root;
+    Tree() : root(NULL) {}
+    
+    int verticalSum(int n) {
+        unordered_map<int, int> map;
+        verticalSumInter(root, 0, map);
+        
+        if (map.find(n) == map.end()) return 0;
+        return map[n];
+    }
+    
+    int maxWidth() {
+        unordered_map<int, int> map;
+        maxWidthInter(root, 0, map);
+
+        return std::max_element(map.begin(), map.end(), widthCompare)->second;
+    }
+    
+    int maxWidth2() {
+        if (root == NULL) return 0;
+        
+        std::queue<Node*> fifo;
+        
+        fifo.push(root);
+        fifo.push(NULL);
+        
+        int width = 1;
+        int tmpWidth = 0;
+        while(!fifo.empty()) {
+            Node *top = fifo.front();
+            fifo.pop();
+            
+            if (top == NULL) {
+                width = std::max(width, tmpWidth);
+                tmpWidth = 0;
+                if (!fifo.empty())
+                    fifo.push(NULL);
+            }
+            else {
+                tmpWidth += 1;
+                if (top->left != NULL)
+                    fifo.push(top->left);
+                    
+                if (top->right != NULL)
+                    fifo.push(top->right);
+            }
+        }
+        return width;
+    }
+};
+
+int main()
+{
+    Tree t;
+    t.root = createNode(1);
+    
+    t.root->left = createNode(2);
+    t.root->right = createNode(3);
+    
+    t.root->left->left = createNode(4);
+    t.root->left->right = createNode(5);
+    
+    t.root->right->left = createNode(7);
+    t.root->right->right = createNode(6);
+    
+    cout << "Sum for 0 is " << t.verticalSum(0) << endl;
+    cout << "Sum for 1 is " << t.verticalSum(1) << endl;
+    cout << "Sum for -1 is " << t.verticalSum(-1) << endl;
+    cout << "Sum for 2 is " << t.verticalSum(2) << endl;
+
+	cout << "Max width: " << t.maxWidth() << endl;
+	cout << "Max width: " << t.maxWidth2() << endl;
+
+    return 0;
+}
+

@@ -169,6 +169,32 @@ bool isBst(Node *root, int min, int max) {
     return isBst(root->left, min, root->value - 1) && isBst(root->right, root->value + 1, max);
 }
 
+
+bool getLca2(Node *root, int a, int b, Node **lca) {
+    if (root == NULL) return false;
+    if (root->value == a || root->value == b) return true;
+    
+    bool foundL = getLca2(root->left, a, b, lca);
+    bool foundR = getLca2(root->right, a, b, lca);
+    
+    if (foundL && foundR) {
+        *lca = root;
+        return true;
+    }
+    else if (foundL || foundR) return true;
+    else return false;
+}
+
+Node * lca2(Node *root, int a, int b) {
+    if (root == NULL) return NULL;
+    
+    Node *lcaNode = NULL;
+    getLca2(root, a, b, &lcaNode);
+    
+    return lcaNode;
+}
+
+
 int main()
 {
     Node * root = new Node(23);

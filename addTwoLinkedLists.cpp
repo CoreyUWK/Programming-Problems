@@ -29,6 +29,16 @@ std::tuple<Node *, int> sumLists(Node *num1, Node *num2) {
     return std::make_tuple(new Node(sum % 10, std::get<0>(prev)), sum / 10);
 }
 
+Node * sumList2(Node *l1, Node *l2, int &carry) {
+    if (l1 == NULL) return NULL;
+    Node *res = sumList(l1->next, l2->next, carry);
+    
+    int totalSum = l1->value + l2->value + carry;
+    carry = totalSum / 10;
+    
+    return new Node(totalSum % 10, res);
+}
+
 int main()
 {
     Node *head1 = new Node(3, new Node(2, new Node(1)));
